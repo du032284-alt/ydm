@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{about.title}">Про нас</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-light">
+
+<header th:insert="bloks/header :: header"> </header>
+
+<div class="container my-5">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-dark m-0" th:text="#{about.heading}">Про наш GlowGreen</h1>
+    </div>
+    <div class="row g-4">
+
+        <div class="col-lg-7">
+            <div class="card h-100 p-5 border-0 bg-white rounded-4 d-flex flex-column justify-content-center"
+                 style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                <h3 class="fw-bold text-dark mb-3" th:text="#{about.welcome.title}">Ласкаво просимо!</h3>
+                <p class="text-secondary mb-0 lh-base fs-5" th:text="#{about.welcome.text}">
+                    Ми — спеціалізований центр, який допомагає зробити ваші сади квітучими, а городи — неймовірно врожайними. Дбаємо про кожен паросток разом із вами!
+                </p>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 rounded-4 p-5 text-white h-100 d-flex flex-column justify-content-center custom-card shadow-sm"
+                 style="background: linear-gradient(135deg, #198754 0%, #115c39 100%);">
+                <span class="text-white text-opacity-75 small text-uppercase fw-bold mb-2" style="letter-spacing: 0.05em;" th:text="#{about.mission.title}">Місія</span>
+                <h4 class="fw-bold mb-0 lh-base" th:text="#{about.mission.text}">Забезпечити вас усім необхідним для комфортного садівництва та гарантованого результату!</h4>
+            </div>
+        </div>
+
+        <div class="col-12 mt-5 mb-2">
+            <h3 class="fw-bold text-dark h4 m-0" th:text="#{about.subtitle}">Наш асортимент та характеристики:</h3>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 p-4 border-0 bg-white rounded-4 custom-card"
+                 style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                <div class="fs-2 mb-2">🌱</div>
+                <h5 class="fw-bold text-dark mb-2" th:text="#{about.seeds.title}">Насіння</h5>
+                <p class="text-secondary small mb-0 lh-base" th:text="#{about.seeds.text}">
+                    Контролюємо конкретний тип рослини та рекомендуємо найкращий період посіву для кожного сорту.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 p-4 border-0 bg-white rounded-4 custom-card"
+                 style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                <div class="fs-2 mb-2">✂️</div>
+                <h5 class="fw-bold text-dark mb-2" th:text="#{about.tools.title}">Садовий інструмент</h5>
+                <p class="text-secondary small mb-0 lh-base" th:text="#{about.tools.text}">
+                    Надійний та ергономічний інвентар для легкого догляду за рослинами, обрізки саджанців та підготовки ґрунту.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 p-4 border-0 bg-white rounded-4 custom-card"
+                 style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                <div class="fs-2 mb-2">🏡</div>
+                <h5 class="fw-bold text-dark mb-2" th:text="#{about.decor.title}">Декор</h5>
+                <p class="text-secondary small mb-0 lh-base" th:text="#{about.decor.text}">
+                    Естетичні елементи, фігурки та аксесуари, які створять неповторний затишок і підкреслять красу вашої ділянки.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/shop" class="btn btn-success rounded-pill px-4 py-2.5 fw-semibold main-btn shadow-sm" th:text="#{about.btn.shop}">
+            Перейти до покупок
+        </a>
+    </div>
+</div>
+
+<footer th:insert="bloks/footer :: footer"> </footer>
+
+</body>
+</html>

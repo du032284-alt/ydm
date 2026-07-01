@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Категорії товарів</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-light">
+<header th:insert="bloks/header :: header"> </header>
+
+<div class="container my-5">
+    <div class="mb-4">
+        <h2 class="fw-bold text-dark m-0">Категорії товарів</h2>
+    </div>
+
+    <div class="container mt-4 mb-4 text-end">
+        <a href="/shop/category/add" class="btn btn-success rounded-3 px-4 py-2 fw-medium btn-add-category">
+            + Додати нову категорію
+        </a>
+    </div>
+
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        <div class="col" th:each="el : ${categories}">
+
+            <div class="card h-100 border-0 bg-white rounded-4 p-3 d-flex flex-column justify-content-between custom-card">
+                <div class="card-body d-flex flex-column p-0">
+
+                    <span class="text-uppercase text-muted small fw-bold mb-2" style="letter-spacing: 0.08em; font-size: 0.75rem;">Категорія</span>
+
+                    <a th:href="'/shop/category/' + ${el.id} + '/products'" class="text-decoration-none">
+                        <h5 class="card-title fw-bold text-dark mb-3 hover-underline" th:text="${el.name}">Назва категорії</h5>
+                    </a>
+
+                    <a th:href="'/shop/category/' + ${el.id} + '/products'" class="text-decoration-none">
+                        <div class="mb-3 text-center img-container rounded-3" style="height: 250px;">
+                            <div th:if="${el.icon != null and el.icon != ''}">
+                                <img th:src="'/images/' + ${el.icon}" alt="icon" class="category-img">
+                            </div>
+                            <div th:unless="${el.icon != null and el.icon != ''}">
+                                <img src="/images/Насіння.png" alt="no-image" class="category-img">
+                            </div>
+                        </div>
+                    </a>
+
+                    <div class="mb-4 mt-auto border-top border-light pt-3 description-zone">
+                        <p class="text-secondary small mb-0 lh-base" th:text="${el.description}"></p>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 pt-1 mt-auto">
+                        <a th:href="'/shop/category/' + ${el.id}" class="btn btn-link btn-sm text-decoration-none fw-medium text-center w-100 hover-underline m-0">
+                            Детальніше про категорію →
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:insert="bloks/footer :: footer"> </footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Про розробника</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-light">
+<header th:insert="bloks/header :: header"> </header>
+<div class="container my-5 py-4" style="max-width: 1150px;">
+    <div th:if="${param.success}" class="alert alert-success border-0 rounded-3 shadow-sm mb-4" role="alert">
+        ✅ Лист успішно надіслано на пошту розробника!
+    </div>
+    <div th:if="${param.error}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-4" role="alert">
+        ❌ Помилка відправки. Перевірте налаштування пошти в application.properties.
+    </div>
+    <div class="row g-4">
+        <div class="col-md-7 col-lg-8">
+            <div class="card border-0 p-4 p-md-5 rounded-4 bg-white shadow-sm h-100">
+
+                <div class="d-flex align-items-center mb-5">
+                    <div class="rounded-circle overflow-hidden shadow-sm me-4" style="width: 120px; height: 120px; flex-shrink: 0;">
+                        <img th:src="@{/images/розробник.jpg}" alt="Дарина Юрченко" class="img-fluid" style="height: 100%; width: 100%; object-fit: cover;">
+                    </div>
+                    <div>
+                        <h2 class="fw-bold text-dark m-0">Дарина Юрченко 🧑‍💻</h2>
+                        <div class="text-muted small mt-1">Розробник  18 років</div>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="fw-bold text-success small text-uppercase" style="letter-spacing: 0.5px;">Заклад освіти</div>
+                        <div class="text-dark fw-medium fs-5">Конотопський індустріально-педагогічний фаховий коледж СумДУ</div>
+                        <div class="text-muted small">Спеціальність: Інженерія програмного забезпечення</div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="fw-bold text-success small text-uppercase" style="letter-spacing: 0.5px;">Академічна група</div>
+                        <div class="text-dark fs-5">731</div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="fw-bold text-success small text-uppercase" style="letter-spacing: 0.5px;">Знання мов</div>
+                        <div class="text-dark fs-5">Українська, Англійська, Німецька (базова)</div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="fw-bold text-success small text-uppercase" style="letter-spacing: 0.5px;">Основні навички</div>
+                        <div class="text-dark fs-5">C#, PHP, Java, Spring Boot, MySQL, UI/UX Design</div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="fw-bold text-success small text-uppercase" style="letter-spacing: 0.5px;">Захоплення</div>
+                        <div class="text-dark fs-5">Програмування, дизайн, малювання, читання</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5 col-lg-4">
+            <div class="card border-0 p-4 rounded-4 bg-white shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <h4 class="fw-bold text-dark mb-4">📩 Зворотній зв'язок</h4>
+
+                    <form action="/developer/contact" method="post">
+                        <div class="mb-3">
+                            <div class="fw-bold text-secondary small text-uppercase mb-1" style="font-size: 0.75rem;">Ваше ім'я</div>
+                            <input type="text" name="name" class="form-control rounded-3 p-2.5 border-light bg-light" placeholder="Як до вас звертатися?" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="fw-bold text-secondary small text-uppercase mb-1" style="font-size: 0.75rem;">Куди прийде лист</div>
+                            <input type="email" name="email" value="du032284@gmail.com" class="form-control rounded-3 p-2.5 border-light bg-light text-muted fw-medium" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="fw-bold text-secondary small text-uppercase mb-1" style="font-size: 0.75rem;">Повідомлення</div>
+                            <textarea name="message" class="form-control rounded-3 p-2.5 border-light bg-light" rows="4" placeholder="Текст вашого листа..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg rounded-3 fw-semibold w-100 mt-2 shadow-sm" style="padding: 12px; background-color: #2e7d32; border-color: #2e7d32;">
+                            Надіслати листа
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:insert="bloks/footer :: footer"> </footer>
+</body>
+</html>

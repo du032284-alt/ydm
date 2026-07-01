@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Редагування категорії</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-light">
+<header th:insert="bloks/header :: header"> </header>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm bg-white rounded-3 p-4">
+
+                <h3 class="fw-bold text-dark mb-4">Редагувати категорію</h3>
+
+                <form th:action="'/shop/category/' + ${category.id} + '/edit'" method="post" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-semibold">Назва</label>
+                        <input type="text" name="name" th:value="${category.name}" class="form-control rounded-2" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-semibold">Завантажити нове фото категорії</label>
+                        <input type="file" name="file" accept="image/*" class="form-control rounded-2">
+                        <div class="form-text text-muted small">Поточний файл у базі: <span th:text="${category.icon}"></span></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-semibold">Опис</label>
+                        <textarea name="description" rows="4" class="form-control rounded-2" th:text="${category.description}" required></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success rounded-2 px-4 py-2 fw-medium w-100">Зберегти</button>
+                        <a th:href="'/shop/category/' + ${category.id}" class="btn btn-light rounded-2 px-4 py-2 fw-medium w-100 border text-muted">Скасувати</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:insert="bloks/footer :: footer"> </footer>
+</body>
+</html>

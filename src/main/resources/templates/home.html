@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Головна</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-light">
+
+<header th:insert="bloks/header :: header"> </header>
+
+<div class="container col-xxl-8 px-4 py-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img th:src="@{/images/фото.jpg}"
+                 class="d-block mx-lg-auto img-fluid rounded-4 shadow"
+                 width="700"
+                 height="500"
+                 loading="lazy"
+                 alt="Магазин для садівництва">
+        </div>
+
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold lh-1 mb-2" style="color: #000000;">Магазин для садівництва</h1>
+            <h2 class="display-7 fw-bold lh-1 mb-2" style="color: #000000;">Все для вашого саду та городу</h2>
+            <p class="lead">
+                Швидко та зручно обирайте якісні товари для вашої ділянки. Ми пропонуємо перевірене насіння з точним періодом посіву, ефективні добрива та міцні горщики в надійній упаковці для безпечного транспортування розсади.
+            </p>
+            <p class="text-muted small" th:text="${title}"></p>
+
+            <div class="d-grid gap-3 d-sm-flex justify-content-md-start mt-4">
+                <a href="/shop" class="btn btn-success btn-lg rounded-3 fw-semibold main-btn shadow-sm d-flex align-items-center justify-content-center" style="padding: 12px 28px; min-width: 210px; background-color: #2e7d32; border-color: #2e7d32;">
+                    Перейти до товарів
+                </a>
+                <a href="/about" class="btn btn-outline-secondary btn-lg rounded-3 fw-medium d-flex align-items-center justify-content-center" style="padding: 12px 28px; min-width: 210px;">
+                    Дізнатися про нас
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container my-5 py-4">
+    <div class="row text-center g-4">
+
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 border-0 custom-card h-100">
+                <div class="mb-3 text-success fs-1">🌱</div>
+                <h5 class="fw-bold text-dark mb-2">Висока якість</h5>
+                <p class="text-muted small mb-0">Тільки сертифіковане насіння та перевірені інструменти від надійних виробників.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 border-0 custom-card h-100">
+                <div class="mb-3 text-success fs-1">📦</div>
+                <h5 class="fw-bold text-dark mb-2">Швидка доставка</h5>
+                <p class="text-muted small mb-0">Оперативно збираємо та відправляємо ваші замовлення, щоб вони прибули вчасно до сезону.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 bg-white rounded-4 border-0 custom-card h-100">
+                <div class="mb-3 text-success fs-1">🤝</div>
+                <h5 class="fw-bold text-dark mb-2">Турбота про клієнта</h5>
+                <p class="text-muted small mb-0">Завжди готові підказати, допомогти з вибором та надати інструкції щодо правильного догляду.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container my-5 py-4" th:unless="${#lists.isEmpty(favoriteProducts)}">
+    <div class="mb-5 text-center text-md-start">
+        <h2 class="fw-bold m-0 text-uppercase" style="letter-spacing: 0.05em; font-size: 2.3rem; color: #000000; border-left: 5px solid #2e7d32; padding-left: 15px;">РЕКОМЕНДОВАНІ ТОВАРІ</h2>
+    </div>
+
+    <div id="recommendedCarousel" class="carousel slide shadow rounded-4 overflow-hidden bg-white" data-bs-ride="carousel" style="max-width: 900px; margin: 0 auto;">
+
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#recommendedCarousel"
+                    th:each="product, status : ${favoriteProducts}"
+                    th:data-bs-slide-to="${status.index}"
+                    th:classappend="${status.first} ? 'active'"
+                    th:aria-label="'Slide ' + ${status.count}">
+            </button>
+        </div>
+
+        <div class="carousel-inner" style="height: 460px;">
+            <div th:each="product, status : ${favoriteProducts}"
+                 th:classappend="${status.first} ? 'active'"
+                 class="carousel-item h-100 position-relative">
+
+                <a th:href="'/shop/product/' + ${product.id}">
+                    <img th:if="${product.image != null and product.image != ''}"
+                         th:src="'/images/' + ${product.image}"
+                         class="d-block w-100 h-100"
+                         style="object-fit: cover; filter: brightness(60%);"
+                         alt="product-image">
+                </a>
+
+                <div class="carousel-caption d-flex flex-column justify-content-center align-items-center text-center p-4 rounded-4"
+                     style="background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(5px); bottom: 40px; left: 10%; right: 10%;">
+
+                    <h3 class="fw-bold text-white mb-2" th:text="${product.title}">Назва товару</h3>
+
+                    <div class="fs-4 fw-bold text-warning mb-3">
+                        <span th:text="${product.price}">0.00</span> <span class="fs-6 fw-normal text-light">грн</span>
+                    </div>
+
+                    <form th:action="'/cart/add/' + ${product.id}" method="post" class="m-0">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-semibold shadow-sm" style="background-color: #2e7d32; border-color: #2e7d32;">
+                            КУПИТИ ЗАРАЗ
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true" style="background-size: 50%;"></span>
+            <span class="visually-hidden">Попередній</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true" style="background-size: 50%;"></span>
+            <span class="visually-hidden">Наступний</span>
+        </button>
+    </div>
+</div>
+
+<div class="container my-5 py-5">
+    <div class="mb-5 text-center text-md-start">
+        <h2 class="fw-bold m-0 text-uppercase" style="letter-spacing: 0.05em; font-size: 2.3rem; color: #000000; border-left: 5px solid #2e7d32; padding-left: 15px;">ВІДГУКИ</h2>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 p-4 rounded-4 h-100 custom-card d-flex flex-column"
+                 style="background-color: #a5d4a8; color: #062608;">
+                <div class="fs-1 fw-bold lh-1 mb-2" style="color: #1b381d; font-family: serif;">““</div>
+                <p class="lh-base mb-4" style="font-size: 0.95rem; text-align: justify;">
+                    Замовляла комплексні добрива та фірмове еко-насіння зелені для підвіконня. Схожість просто неймовірна, перші паростки з'явилися вже за кілька днів! Окреме дякую за надійне та дуже охайне пакування — нічого не просипалося. Тепер я ваш постійний клієнт!
+                </p>
+                <h6 class="fw-bold mt-auto mb-0" style="font-size: 0.95rem; color: #1e2b1e;">Олександра К.</h6>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 p-4 rounded-4 h-100 custom-card d-flex flex-column"
+                 style="background-color: #a5d4a8; color: #062608;">
+                <div class="fs-1 fw-bold lh-1 mb-2" style="color: #1b381d; font-family: serif;">““</div>
+                <p class="lh-base mb-4" style="font-size: 0.95rem; text-align: justify;">
+                    Дуже задоволений співпрацею з цим магазином. Ціни цілком адекватні, менеджер швидко зв'язався для підтвердження деталей, а саме замовлення відправили в той же день. Контейнери для розсади міцні, plastic якісний та без стороннього запаху. Рекомендую всім садівникам!
+                </p>
+                <h6 class="fw-bold mt-auto mb-0" style="font-size: 0.95rem; color: #1e2b1e;">Сергій А.</h6>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 p-4 rounded-4 h-100 custom-card d-flex flex-column"
+                 style="background-color: #a5d4a8; color: #062608;">
+                <div class="fs-1 fw-bold lh-1 mb-2" style="color: #1b381d; font-family: serif;">““</div>
+                <p class="lh-base mb-4" style="font-size: 0.95rem; text-align: justify;">
+                    Чудовий асортимент та бездоганний сервіс. Усі пакети з насінням містять чіткі інструкції та терміни придатності, що дуже зручно. Також замовляла тут декор для кімнатних рослин — усе прийшло в ідеальному стані. Бажаю вашому магазину процвітання та багато клієнтів!
+                </p>
+                <h6 class="fw-bold mt-auto mb-0" style="font-size: 0.95rem; color: #1e2b1e;">Інна С.</h6>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:insert="bloks/footer :: footer"> </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

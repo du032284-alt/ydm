@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="header" class="w-100 shadow-sm mb-4" style="background-color: #ffffff; border-bottom: 1px solid rgba(0, 0, 0, 0.05);">
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-between py-3">
+
+            <div class="col-md-2 mb-2 mb-md-0 text-start">
+                <a href="/" class="fs-4 fw-bold text-dark text-decoration-none logo-brand">
+                    Glow<span class="text-success">Green</span>
+                </a>
+            </div>
+
+            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-3 fw-medium text-secondary header-link" th:text="#{nav.home}">Головна</a></li>
+                <li><a href="/shop" class="nav-link px-3 fw-medium text-dark header-link" th:text="#{nav.shop}">Категорії</a></li>
+                <li><a href="/cart" class="nav-link px-3 fw-medium text-dark header-link" th:text="#{nav.cart}">🛒Кошик</a></li>
+                <li><a href="/orders/history" class="nav-link px-3 fw-medium text-dark header-link" th:text="#{nav.history}">📜 Історія</a></li>
+                <li><a href="/about" class="nav-link px-3 fw-medium text-dark header-link" th:text="#{nav.about}">Про нас</a></li>
+                <li><a href="/developer" class="nav-link px-3 fw-medium text-dark header-link" th:text="#{nav.developer}">Про розробника</a></li>
+            </ul>
+
+            <!-- ПОШУК -->
+            <div id="VueSearchApp" class="position-relative mx-2 style-search-block" style="max-width: 180px; flex-grow: 1;">
+                <input
+                        type="text"
+                        v-model="query"
+                        class="form-control form-control-sm rounded-3 border-light bg-light py-1.5 px-3 small"
+                        placeholder="Пошук..."
+                        autocomplete="off"
+                >
+                <div v-if="results.length > 0" class="position-absolute w-100 bg-white mt-1 shadow rounded-3 overflow-hidden border border-light" style="z-index: 1050; max-height: 250px; overflow-y: auto;">
+                    <div v-for="product in results" :key="product.id" class="p-2 border-bottom border-light">
+                        <a :href="'/shop/product/' + product.id" class="text-decoration-none d-block">
+                            <div class="text-dark fw-medium small text-truncate">{{ product.title }}</div>
+                            <div class="text-success fw-bold" style="font-size: 0.75rem;">{{ product.price }} грн</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+
+                <th:block sec:authorize="isAnonymous()">
+                    <a href="/login" class="btn btn-outline-success px-3 py-1.5 rounded-3 fw-medium" th:text="#{nav.login}">Вхід</a>
+                    <a href="/register" class="btn btn-success px-3 py-1.5 rounded-3 fw-medium" th:text="#{nav.register}">Реєстрація</a>
+                </th:block>
+
+                <th:block sec:authorize="isAuthenticated()">
+                    <span class="text-muted small me-1">
+                        🌱 <strong class="text-dark" sec:authentication="name">Садівник</strong>
+                    </span>
+                    <form th:action="@{/logout}" method="post" class="m-0 d-inline">
+                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 px-3 py-1.5 fw-medium">
+                            Вихід
+                        </button>
+                    </form>
+                </th:block>
+
+            </div>
+
+            <div class="ms-2 align-self-center">
+                <a href="?lang=uk" class="text-decoration-none fw-bold text-success">UA</a>
+                <span class="text-muted">|</span>
+                <a href="?lang=en" class="text-decoration-none fw-bold text-dark">EN</a>
+            </div>
+
+        </header>
+    </div>
+</div>
+</body>
+</html>

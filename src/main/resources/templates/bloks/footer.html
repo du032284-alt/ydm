@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="footer" class="container">
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="/" class="nav-link px-2 text-body-secondary">Головна</a></li>
+            <li class="nav-item"><a href="/shop" class="nav-link px-2 text-body-secondary">Магазин</a></li>
+            <li class="nav-item"><a href="/cart" class="nav-link px-2 text-body-secondary">🛒Кошик</a></li>
+            <li class="nav-item"><a href="/about" class="nav-link px-2 text-body-secondary">Про нас</a></li>
+        </ul>
+        <p class="text-center text-body-secondary">© 2026 Company, Inc</p>
+    </footer>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script>
+        // Забираємо з Vue функції для реактивності та відстеження
+        const { createApp, ref, watch } = Vue;
+
+        createApp({
+            setup() {
+                // query — текст з пошуку, results — масив знайдених товарів з бази
+                const query = ref('');
+                const results = ref([]);
+
+                // Асинхронна функція, яка шле запит на Спрінг-контролер, коли ввели більше 2 літер
+                const fetchProducts = async (searchWord) => {
+                    if (searchWord.trim().length < 2) {
+                        results.value = [];
+                        return;
+                    }
+                    try {
+                        // Перетворюємо відповідь від сервера у масив товарів для фронтенду
+                        const response = await fetch('/api/products/search?keyword=' + encodeURIComponent(searchWord));
+                        if (response.ok) {
+                            results.value = await response.json();
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                    }
+                };
+
+                // вотч автоматично запускає пошук щоразу, коли користувач міняє текст в інпуті
+                watch(query, (newQuery) => {
+                    fetchProducts(newQuery);
+                });
+
+                // Повертаємо змінні, щоб зв'язати їх з штмл-інпутом у хедері
+                return {
+                    query,
+                    results
+                };
+            }
+        }).mount('#VueSearchApp');
+    </script>
+</div>
+</body>
+</html>
