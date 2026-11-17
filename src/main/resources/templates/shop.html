@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="uk">
 <head>
     <meta charset="UTF-8">
     <title>Категорії товарів</title>
@@ -14,12 +16,12 @@
         <h2 class="fw-bold text-dark m-0">Категорії товарів</h2>
     </div>
 
-    <div class="container mt-4 mb-4 text-end">
+    <!-- Кнопка додавання видна тільки авторизованим -->
+    <div sec:authorize="isAuthenticated()" class="container mt-4 mb-4 text-end">
         <a href="/shop/category/add" class="btn btn-success rounded-3 px-4 py-2 fw-medium btn-add-category">
             + Додати нову категорію
         </a>
     </div>
-
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
         <div class="col" th:each="el : ${categories}">

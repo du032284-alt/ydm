@@ -32,9 +32,28 @@
                 <span class="badge bg-success-subtle text-success mb-2 px-3 py-2 rounded-pill fw-medium" th:text="${product.category.name}">Категорія</span>
                 <h2 class="fw-bold text-dark mb-3" th:text="${product.title}">Назва товару</h2>
 
-                <div class="fs-2 fw-bold text-success mb-4">
-                    <span th:text="${product.price}">0.00</span> <span class="fs-4 fw-normal text-dark">грн</span>
+                <!-- Варіант з активною акцією -->
+                <div th:if="${product.isOnSale()}" class="mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge bg-danger rounded-pill px-2 py-1 small"
+                              th:text="'🔥 Акція -' + ${#numbers.formatDecimal(product.discount, 0, 0)} + '%'">
+                        </span>
+                        <span class="text-muted text-decoration-line-through fs-5">
+                            <span th:text="${product.calculatePrice()}">0.00</span> грн
+                        </span>
+                    </div>
+                    <div class="fs-2 fw-bold text-success">
+                        <span th:text="${#numbers.formatDecimal(product.calculatePrice(product.discount), 1, 2)}">0.00</span>
+                        <span class="fs-4 fw-normal text-dark">грн</span>
+                    </div>
                 </div>
+
+                <!-- Звичайний товар без знижки -->
+                <div th:unless="${product.isOnSale()}" class="fs-2 fw-bold text-success mb-3">
+                    <span th:text="${product.calculatePrice()}">0.00</span>
+                    <span class="fs-4 fw-normal text-dark">грн</span>
+                </div>
+
 
                 <h5 class="fw-bold text-dark mb-2">Опис товару:</h5>
                 <p class="text-muted lh-base" style="white-space: pre-wrap;" th:text="${product.text}">Опис</p>

@@ -40,6 +40,8 @@
                     </td>
                     <td>
                         <h6 class="fw-bold text-dark m-0" th:text="${item.product.title}"></h6>
+                        <span th:if="${item.product.isOnSale()}" class="badge bg-danger rounded-pill mt-1" style="font-size: 0.75rem;"
+                              th:text="'Акція -' + ${#numbers.formatDecimal(item.product.discount, 0, 0)} + '%'"></span>
                     </td>
 
                     <td class="text-center">
@@ -64,7 +66,16 @@
                         </div>
                     </td>
 
-                    <td class="text-end fw-bold text-success" th:text="${item.product.price * item.quantity} + ' грн'"></td>
+                    <td class="text-end">
+                        <div th:if="${item.product.isOnSale()}">
+                            <div class="text-muted text-decoration-line-through small"
+                                 th:text="${#numbers.formatDecimal(item.product.calculatePrice() * item.quantity, 1, 2)} + ' грн'"></div>
+                            <div class="fw-bold text-success"
+                                 th:text="${#numbers.formatDecimal(item.product.calculatePrice(item.product.discount) * item.quantity, 1, 2)} + ' грн'"></div>
+                        </div>
+                        <div th:unless="${item.product.isOnSale()}" class="fw-bold text-success"
+                             th:text="${#numbers.formatDecimal(item.product.calculatePrice() * item.quantity, 1, 2)} + ' грн'"></div>
+                    </td>
 
                     <td>
                         <form th:action="'/cart/delete/' + ${item.id}" method="post" class="text-center m-0">

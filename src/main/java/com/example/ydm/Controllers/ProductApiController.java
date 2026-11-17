@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-// Робимо саме рест контроллер, щоб повертати чисті дані
+// Робимо рест контроллер, щоб повертати чисті дані
 @RestController
 @RequestMapping("/api/products")
 public class ProductApiController {
@@ -19,7 +19,7 @@ public class ProductApiController {
     @Autowired
     private repoProduct productRepository; // Підключаємо репозиторій товарів
 
-    // Обробляємо GET-запит на пошук
+    // Обробка запит на пошук
     @GetMapping("/search")
     public List<Product> searchProducts(@RequestParam(name = "keyword", required = false) String keyword) {
 
@@ -27,8 +27,6 @@ public class ProductApiController {
         if (keyword == null || keyword.trim().isEmpty()) {
             return new ArrayList<>();
         }
-
-        // Якщо текст є , то показуємо його
         return productRepository.findByTitleContainingIgnoreCase(keyword);
     }
 }

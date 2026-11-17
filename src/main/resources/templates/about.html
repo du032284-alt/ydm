@@ -15,8 +15,10 @@
     <div class="text-center mb-5">
         <h1 class="fw-bold text-dark m-0" th:text="#{about.heading}">Про наш GlowGreen</h1>
     </div>
+
     <div class="row g-4">
 
+        <!-- Верхній блок: Ласкаво просимо -->
         <div class="col-lg-7">
             <div class="card h-100 p-5 border-0 bg-white rounded-4 d-flex flex-column justify-content-center"
                  style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
@@ -27,6 +29,7 @@
             </div>
         </div>
 
+        <!-- Верхній блок: Місія -->
         <div class="col-lg-5">
             <div class="card border-0 rounded-4 p-5 text-white h-100 d-flex flex-column justify-content-center custom-card shadow-sm"
                  style="background: linear-gradient(135deg, #198754 0%, #115c39 100%);">
@@ -35,11 +38,46 @@
             </div>
         </div>
 
+        <!-- Блок статистики з локалізацією -->
+        <div class="col-12 mt-4">
+            <div class="row g-3 text-center">
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 py-3 px-2 border-0 bg-white rounded-4 custom-card"
+                         style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                        <h2 class="fw-bold text-success mb-1" th:text="#{about.stats.germination.value}">100%</h2>
+                        <span class="text-secondary small" th:text="#{about.stats.germination.label}">Схожість насіння</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 py-3 px-2 border-0 bg-white rounded-4 custom-card"
+                         style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                        <h2 class="fw-bold text-success mb-1" th:text="#{about.stats.categories.value}">4+</h2>
+                        <span class="text-secondary small" th:text="#{about.stats.categories.label}">Категорії каталогу</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 py-3 px-2 border-0 bg-white rounded-4 custom-card"
+                         style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                        <h2 class="fw-bold text-success mb-1" th:text="#{about.stats.support.value}">24/7</h2>
+                        <span class="text-secondary small" th:text="#{about.stats.support.label}">Швидке замовлення</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card h-100 py-3 px-2 border-0 bg-white rounded-4 custom-card"
+                         style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                        <h2 class="fw-bold text-success mb-1" th:text="#{about.stats.eco.value}">EKO</h2>
+                        <span class="text-secondary small" th:text="#{about.stats.eco.label}">Безпечні склади</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-12 mt-5 mb-2">
             <h3 class="fw-bold text-dark h4 m-0" th:text="#{about.subtitle}">Наш асортимент та характеристики:</h3>
         </div>
 
-        <div class="col-md-4">
+        <!-- 1. Насіння -->
+        <div class="col-12 col-sm-6 col-lg-3">
             <div class="card h-100 p-4 border-0 bg-white rounded-4 custom-card"
                  style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
                 <div class="fs-2 mb-2">🌱</div>
@@ -50,7 +88,8 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <!-- 2. Садовий інструмент -->
+        <div class="col-12 col-sm-6 col-lg-3">
             <div class="card h-100 p-4 border-0 bg-white rounded-4 custom-card"
                  style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
                 <div class="fs-2 mb-2">✂️</div>
@@ -61,7 +100,8 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <!-- 3. Декор -->
+        <div class="col-12 col-sm-6 col-lg-3">
             <div class="card h-100 p-4 border-0 bg-white rounded-4 custom-card"
                  style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
                 <div class="fs-2 mb-2">🏡</div>
@@ -72,8 +112,21 @@
             </div>
         </div>
 
+        <!-- 4. Добрива та захист -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 p-4 border-0 bg-white rounded-4 custom-card"
+                 style="border: 1px solid rgba(0, 0, 0, 0.05) !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01) !important;">
+                <div class="fs-2 mb-2">🧪</div>
+                <h5 class="fw-bold text-dark mb-2" th:text="#{about.fertilizers.title}">Добрива та захист</h5>
+                <p class="text-secondary small mb-0 lh-base" th:text="#{about.fertilizers.text}">
+                    Органічні підживки, стимулятори росту та біологічний захист для міцного імунітету і високої врожайності.
+                </p>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Кнопка переходу -->
     <div class="text-center mt-5">
         <a href="/shop" class="btn btn-success rounded-pill px-4 py-2.5 fw-semibold main-btn shadow-sm" th:text="#{about.btn.shop}">
             Перейти до покупок

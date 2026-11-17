@@ -4,6 +4,7 @@ import com.example.ydm.models.AppUser;
 import com.example.ydm.models.ItemCart;
 import com.example.ydm.models.Order;
 import com.example.ydm.models.OrderItem;
+import com.example.ydm.models.Product;
 import com.example.ydm.repo.repoAppUser;
 import com.example.ydm.repo.repoItemCart;
 import com.example.ydm.repo.repoOrder;
@@ -44,8 +45,12 @@ public class OrderController {
 
         double totalPrice = 0;
         for (ItemCart item : cartItems) {
-            totalPrice += item.getProduct().getPrice() * item.getQuantity();
+            Product prod = item.getProduct();
+            // Враховуємо знижку товару через ООП-метод
+            double actualPrice = prod.isOnSale() ? prod.calculatePrice(prod.getDiscount()) : prod.calculatePrice();
+            totalPrice += actualPrice * item.getQuantity();
         }
+        totalPrice = Math.round(totalPrice * 100.0) / 100.0;
 
         // Шукаємо користувача, щоб дізнатися його реальні бонуси з БД
         int bonuses = 0;
@@ -56,11 +61,11 @@ public class OrderController {
 
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("userBonuses", bonuses); // Передаємо у Thymeleaf для правай колонки
+        model.addAttribute("userBonuses", bonuses);
         return "order";
     }
 
-    //СТВОРЕННЯ ЗАМОВЛЕННЯ
+    // СТВОРЕННЯ ЗАМОВЛЕННЯ
     @PostMapping("/orders/create")
     public String createOrder(@RequestParam String customerName,
                               @RequestParam String customerPhone,
@@ -74,12 +79,15 @@ public class OrderController {
             return "redirect:/cart";
         }
 
-        // Визнач базову суму
+        // Визначаємо базову суму з урахуванням знижок товарів
         double totalPrice = (totalSum > 0) ? totalSum : 0;
         if (totalPrice == 0) {
             for (ItemCart item : cartItems) {
-                totalPrice += item.getProduct().getPrice() * item.getQuantity();
+                Product prod = item.getProduct();
+                double actualPrice = prod.isOnSale() ? prod.calculatePrice(prod.getDiscount()) : prod.calculatePrice();
+                totalPrice += actualPrice * item.getQuantity();
             }
+            totalPrice = Math.round(totalPrice * 100.0) / 100.0;
         }
 
         double originalPrice = totalPrice;
@@ -113,12 +121,17 @@ public class OrderController {
         order.setShippingAddress(shippingAddress);
         order = orderRepository.save(order);
 
+        // Зберігаємо позиції замовлення з актуальною акційною ціною
         for (ItemCart item : cartItems) {
+            Product prod = item.getProduct();
+            double actualPrice = prod.isOnSale() ? prod.calculatePrice(prod.getDiscount()) : prod.calculatePrice();
+            actualPrice = Math.round(actualPrice * 100.0) / 100.0;
+
             OrderItem orderItem = new OrderItem(
                     order,
-                    item.getProduct(),
+                    prod,
                     item.getQuantity(),
-                    item.getProduct().getPrice()
+                    actualPrice
             );
             order.getItems().add(orderItem);
         }
@@ -133,6 +146,7 @@ public class OrderController {
         cartRepository.deleteAll();
         return "redirect:/orders/history";
     }
+
     @GetMapping("/orders/history")
     public String viewOrderHistory(Model model) {
         Iterable<Order> orders = orderRepository.findAll();
@@ -140,6 +154,7 @@ public class OrderController {
         model.addAttribute("pageTitle", "Історія ваших замовлень");
         return "orders-history";
     }
+
     @PostMapping("/orders/clear")
     public String clearOrderHistory() {
         orderRepository.deleteAll();

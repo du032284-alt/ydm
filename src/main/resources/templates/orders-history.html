@@ -5,21 +5,43 @@
     <title th:text="${pageTitle}">Історія замовлень</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .printable-order, .printable-order * {
+                visibility: visible;
+            }
+            .printable-order {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 15px !important;
+                background-color: #ffffff !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-light">
-<header th:insert="bloks/header :: header"> </header>
+<header th:insert="bloks/header :: header" class="no-print"> </header>
 
 <div class="container my-5" style="max-width: 850px;">
-    <h2 class="fw-bold text-dark mb-4 text-center">📜 Історія замовлень</h2>
+    <h2 class="fw-bold text-dark mb-4 text-center no-print">📜 Історія замовлень</h2>
 
-    <div th:if="${#lists.isEmpty(orders)}" class="text-center py-5 bg-white rounded-4 border border-secondary-subtle shadow-sm">
+    <div th:if="${#lists.isEmpty(orders)}" class="text-center py-5 bg-white rounded-4 border border-secondary-subtle shadow-sm no-print">
         <h4 class="text-muted mb-4">Ви ще не робили замовлень у нашому магазині...</h4>
         <a href="/shop" class="btn btn-success rounded-2 px-4 py-2 fw-medium">Перейти до товарів</a>
     </div>
 
     <div th:unless="${#lists.isEmpty(orders)}" class="accordion" id="ordersAccordion">
 
-        <div class="text-end mb-4">
+        <div class="text-end mb-4 no-print">
             <form th:action="'/orders/clear'" method="post" onsubmit="return confirm('Ви впевнені, що хочете повністю видалити всю історію замовлень? Цю дію не можна скасувати!');" class="m-0">
                 <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 px-3 py-2 fw-medium">
                     🗑️ Очистити всю історію
@@ -27,9 +49,11 @@
             </form>
         </div>
 
-        <div class="accordion-item border-0 rounded-4 bg-white shadow-sm mb-3 overflow-hidden" th:each="order : ${orders}">
+        <div class="accordion-item border-0 rounded-4 bg-white shadow-sm mb-3 overflow-hidden"
+             th:each="order : ${orders}"
+             th:id="'order-card-' + ${order.id}">
 
-            <h2 class="accordion-header">
+            <h2 class="accordion-header no-print">
                 <button class="accordion-button collapsed bg-white text-dark py-3 px-4" type="button"
                         th:data-bs-toggle="'collapse'" th:data-bs-target="'#collapse-' + ${order.id}">
                     <div class="d-flex justify-content-between w-100 align-items-center me-3">
@@ -45,6 +69,22 @@
             <div th:id="'collapse-' + ${order.id}" class="accordion-collapse collapse" data-bs-parent="#ordersAccordion">
                 <div class="accordion-body bg-light-subtle border-top p-4">
 
+                    <div class="d-none d-print-block mb-3 border-bottom pb-2">
+                        <h3 class="fw-bold text-success m-0">GlowGreen — Товарний чек</h3>
+                        <div class="d-flex justify-content-between small text-secondary mt-1">
+                            <span th:text="'Номер замовлення: №' + ${order.id}"></span>
+                            <span th:text="'Дата: ' + ${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Кнопка друку чека -->
+                    <div class="text-end mb-3 no-print">
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-3 px-3 py-1"
+                                th:onclick="'printSingleOrder(' + ${order.id} + ')'">
+                            🖨️ Друкувати чек
+                        </button>
+                    </div>
+
                     <div class="p-3 bg-white rounded-3 mb-4 border border-light shadow-sm small">
                         <div class="row g-2">
                             <div class="col-md-6">
@@ -59,7 +99,7 @@
 
                     <table class="table table-borderless align-middle m-0">
                         <thead>
-                        <tr class="text-muted small">
+                        <tr class="text-muted small border-bottom">
                             <th>Товар</th>
                             <th class="text-center">Кількість</th>
                             <th class="text-end">Ціна за шт.</th>
@@ -68,13 +108,26 @@
                         </thead>
                         <tbody>
                         <tr th:each="item : ${order.items}">
-                            <td class="fw-medium text-dark" th:text="${item.product.title}">Товар</td>
+                            <td class="fw-medium text-dark">
+                                <span th:text="${item.product.title}">Товар</span>
+                                <span th:if="${item.product.isOnSale()}"
+                                      class="badge bg-danger rounded-pill ms-1"
+                                      style="font-size: 0.72rem;"
+                                      th:text="'-' + ${#numbers.formatDecimal(item.product.discount, 0, 0)} + '%'"></span>
+                            </td>
                             <td class="text-center" th:text="${item.quantity} + ' шт.'">1 шт.</td>
                             <td class="text-end text-muted" th:text="${item.price} + ' грн'">0 грн</td>
                             <td class="text-end fw-bold text-success" th:text="${item.price * item.quantity} + ' грн'">0 грн</td>
                         </tr>
                         </tbody>
+                        <tfoot class="border-top">
+                        <tr>
+                            <td colspan="3" class="fw-bold text-dark pt-3">Загальна вартість:</td>
+                            <td class="text-end fw-bold text-success fs-5 pt-3" th:text="${order.totalPrice} + ' грн'"></td>
+                        </tr>
+                        </tfoot>
                     </table>
+
                 </div>
             </div>
 
@@ -82,7 +135,19 @@
     </div>
 </div>
 
-<footer th:insert="bloks/footer :: footer"> </footer>
+<footer th:insert="bloks/footer :: footer" class="no-print"> </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function printSingleOrder(orderId) {
+        document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('printable-order'));
+        const targetOrder = document.getElementById('order-card-' + orderId);
+        if (targetOrder) {
+            targetOrder.classList.add('printable-order');
+            window.print();
+            targetOrder.classList.remove('printable-order');
+        }
+    }
+</script>
 </body>
 </html>

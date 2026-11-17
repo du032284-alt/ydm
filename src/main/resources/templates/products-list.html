@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="uk">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="uk">
 <head>
     <meta charset="UTF-8">
     <title th:text="${pageTitle}">Товари</title>
@@ -10,58 +12,238 @@
 <header th:insert="bloks/header :: header"> </header>
 
 <div class="container my-5">
-    <h2 class="fw-bold text-dark mb-4 text-center" th:text="${pageTitle}"></h2>
 
-    <div class="container my-4 d-flex justify-content-between align-items-center">
-        <a href="/shop" class="text-nav-link text-decoration-none fw-medium m-0 hover-underline">
-            ← Назад до категорій
-        </a>
-        <a th:if="${categoryId != null}" th:href="'/shop/category/' + ${categoryId} + '/product/add'" class="btn btn-success rounded-3 px-4 py-2 fw-medium m-0 btn-add-category">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="/shop" class="text-success text-decoration-none fw-medium">← Назад до категорій</a>
+            <h2 class="fw-bold text-dark mt-2 mb-0" th:text="${pageTitle}">Каталог товарів</h2>
+        </div>
+
+        <a sec:authorize="isAuthenticated()"
+           th:if="${categoryId != null}"
+           th:href="'/shop/category/' + ${categoryId} + '/product/add'"
+           class="btn btn-success rounded-3 px-4 py-2 fw-medium m-0 btn-add-category">
             + Додати товар
         </a>
     </div>
 
-    <div th:if="${#lists.isEmpty(products)}" class="alert alert-neutral text-center text-muted bg-white rounded-3 shadow-sm py-4">
-        У цій категорії поки що немає доступних товарів.
-    </div>
+    <div class="row g-4">
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" th:unless="${#lists.isEmpty(products)}">
-        <div class="col" th:each="product : ${products}">
-            <div class="card h-100 border-0 rounded-4 bg-white p-3 d-flex flex-column justify-content-between custom-card">
-                <div>
-                    <a th:href="'/shop/product/' + ${product.id}" class="text-decoration-none">
-                        <div class="text-center mb-3 rounded-3 img-container" style="height: 250px;">
-                            <img th:if="${product.image != null and product.image != ''}"
-                                 th:src="'/images/' + ${product.image}"
-                                 class="img-fluid category-img" alt="product-image">
-                        </div>
-                    </a>
-                    <a th:href="'/shop/product/' + ${product.id}" class="text-decoration-none">
-                        <h5 class="fw-bold text-dark lh-sm text-start mb-3" th:text="${product.title}">Назва товару</h5>
-                    </a>
+        <aside class="col-md-3">
+            <div class="bg-white p-3 rounded-4 shadow-sm border border-light">
+                <h6 class="fw-bold text-dark mb-3">Підкатегорії</h6>
+                <div class="list-group list-group-flush small" id="filterList">
+                    <!-- Спільна кнопка для всіх категорій -->
+                    <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2 active bg-success text-white" data-filter="all">
+                        Всі товари
+                    </button>
+
+                    <!--Фільтри для категорії Насіння -->
+                    <th:block th:if="${#strings.containsIgnoreCase(pageTitle, 'насін')}">
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="томат">
+                            Помідори (томати)
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="огірок">
+                            Огірки
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="перець">
+                            Перець
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="моркв">
+                            Морква
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="зелень">
+                            Зелень та трави
+                        </button>
+                    </th:block>
+
+                    <!-- Фільтри для категорії Садовий інструмент -->
+                    <th:block th:if="${#strings.containsIgnoreCase(pageTitle, 'інструмент')}">
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="лопат">
+                            Лопати та совки
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="грабл">
+                            Граблі
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="секатор">
+                            Секатори та сучкорізи
+                        </button>
+                    </th:block>
+
+                    <!-- Фільтри для категорії «Декор та освітлення -->
+                    <th:block th:if="${#strings.containsIgnoreCase(pageTitle, 'декор') or #strings.containsIgnoreCase(pageTitle, 'освітл')}">
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="ліхтар">
+                            Ліхтарі та світильники
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="гірлянд">
+                            Гірлянди
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="фігур">
+                            Садові фігурки
+                        </button>
+                    </th:block>
+
+                    <!-- Фільтри для категорії «Добрива та захист -->
+                    <th:block th:if="${#strings.containsIgnoreCase(pageTitle, 'добрив') or #strings.containsIgnoreCase(pageTitle, 'захист')}">
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="органік">
+                            Органічні добрива
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="стимулятор">
+                            Стимулятори росту
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2" data-filter="захист">
+                            Захист від хвороб
+                        </button>
+                    </th:block>
+
+                    <!-- Спільна кнопка акцій для будь-якої категорії -->
+                    <button type="button" class="list-group-item list-group-item-action border-0 rounded-2 py-2 text-danger fw-medium" data-filter="sale">
+                        🔥 Тільки акційні
+                    </button>
                 </div>
+            </div>
+        </aside>
 
-                <div class="mt-auto">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="fs-3 fw-bold text-success">
-                            <span th:text="${product.price}">0.00</span> <span class="fs-5 fw-normal text-muted">грн</span>
+        <main class="col-md-9">
+            <div th:if="${#lists.isEmpty(products)}" class="alert alert-neutral text-center text-muted bg-white rounded-4 shadow-sm py-5">
+                У цій категорії поки що немає доступних товарів.
+            </div>
+            <div id="noMatchesAlert" class="alert alert-white bg-white text-center text-muted rounded-4 shadow-sm py-4 d-none border border-light">
+                Товарів за цим фільтром не знайдено.
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4" th:unless="${#lists.isEmpty(products)}">
+                <div class="col product-item"
+                     th:each="product : ${products}"
+                     th:data-title="${product.title}"
+                     th:data-sale="${product.isOnSale()}">
+                    <div class="card h-100 border-0 rounded-4 bg-white p-3 d-flex flex-column justify-content-between custom-card shadow-sm">
+                        <div>
+                            <a th:href="'/shop/product/' + ${product.id}" class="text-decoration-none">
+                                <div class="text-center mb-3 rounded-3 img-container" style="height: 220px;">
+                                    <img th:if="${product.image != null and product.image != ''}"
+                                         th:src="'/images/' + ${product.image}"
+                                         class="img-fluid category-img" alt="product-image">
+                                </div>
+                            </a>
+                            <a th:href="'/shop/product/' + ${product.id}" class="text-decoration-none">
+                                <h6 class="fw-bold text-dark lh-sm text-start mb-2 hover-underline" th:text="${product.title}">Назва товару</h6>
+                            </a>
                         </div>
-
-                        <form th:action="'/cart/add/' + ${product.id}" method="post" class="m-0">
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-success rounded-pill px-4 py-2 fw-medium btn-sm">
-                                КУПИТИ
-                            </button>
-                        </form>
-
+                        <div class="mt-3 pt-2 border-top border-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <!-- Якщо є знижка -->
+                                    <div th:if="${product.isOnSale()}">
+                                        <div class="d-flex align-items-center gap-1 mb-1">
+                                            <span class="badge bg-danger rounded-pill px-2 py-0" style="font-size: 0.7rem;"
+                                                  th:text="'-' + ${#numbers.formatDecimal(product.discount, 0, 0)} + '%'"></span>
+                                            <span class="text-muted text-decoration-line-through small"
+                                                  th:text="${product.calculatePrice()} + ' грн'"></span>
+                                        </div>
+                                        <div class="fs-5 fw-bold text-success">
+                                            <span th:text="${#numbers.formatDecimal(product.calculatePrice(product.discount), 1, 2)}">0.00</span>
+                                            <span class="small fw-normal text-muted">грн</span>
+                                        </div>
+                                    </div>
+                                    <!-- Без знижки -->
+                                    <div th:unless="${product.isOnSale()}">
+                                        <div class="fs-5 fw-bold text-success">
+                                            <span th:text="${product.calculatePrice()}">0.00</span>
+                                            <span class="small fw-normal text-muted">грн</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <form th:action="'/cart/add/' + ${product.id}" method="post" class="m-0">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-success rounded-pill px-3 py-1 fw-medium btn-sm">
+                                        Купити
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 </div>
 
 <footer th:insert="bloks/footer :: footer"> </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('#filterList button');
+        const products = document.querySelectorAll('.product-item');
+        const noMatchesAlert = document.getElementById('noMatchesAlert');
+
+        // Словник пошукових слів для ВСІХ категорій
+        const filterKeywords = {
+            // Насіння
+            'томат': ['томат', 'помідор'],
+            'огірок': ['огірок', 'огірк', 'огур'],
+            'перець': ['перец', 'перч', 'перцю'],
+            'моркв': ['моркв', 'морков'],
+            'зелень': ['базилік', 'зелен', 'кріп', 'петрушк', 'салат', 'шпинат'],
+
+            // Інструменти
+            'лопат': ['лопат', 'совок'],
+            'грабл': ['грабл'],
+            'секатор': ['секатор', 'сучкоріз', 'ножиц'],
+
+            // Декор та освітлення
+            'ліхтар': ['ліхтар', 'світильник', 'факел', 'підсвічник'],
+            'гірлянд': ['гірлянд', 'росинк'],
+            'фігур': ['фігур', 'сова'],
+
+            // Добрива
+            'органік': ['біогумус', 'курник', 'органічн'],
+            'стимулятор': ['стимулятор', 'корневін', 'янтарн'],
+            'захист': ['захист', 'фіто', 'антихлороз', 'фунгіцид']
+        };
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                buttons.forEach(b => {
+                    b.classList.remove('active', 'bg-success', 'text-white');
+                    if (b.getAttribute('data-filter') === 'sale') {
+                        b.classList.add('text-danger');
+                    }
+                });
+                this.classList.add('active', 'bg-success', 'text-white');
+                this.classList.remove('text-danger');
+
+                const filter = this.getAttribute('data-filter');
+                let visibleCount = 0;
+
+                products.forEach(item => {
+                    const rawTitle = item.getAttribute('data-title') || '';
+                    const title = rawTitle.toLowerCase().trim();
+                    const isSale = item.getAttribute('data-sale') === 'true';
+
+                    let match = false;
+
+                    if (filter === 'all') {
+                        match = true;
+                    } else if (filter === 'sale') {
+                        match = isSale;
+                    } else if (filterKeywords[filter]) {
+                        match = filterKeywords[filter].some(keyword => title.includes(keyword));
+                    }
+
+                    if (match) {
+                        item.classList.remove('d-none');
+                        visibleCount++;
+                    } else {
+                        item.classList.add('d-none');
+                    }
+                });
+
+                if (noMatchesAlert) {
+                    noMatchesAlert.classList.toggle('d-none', visibleCount > 0);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

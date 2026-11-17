@@ -37,7 +37,7 @@ public class ProductController {
         return "products-list";
     }
 
-    //Виведення товарів лише ОБРАНОЇ категорії
+    // Виведення товарів лише ОБРАНОЇ категорії
     @GetMapping("/shop/category/{id}/products")
     public String productsByCategory(@PathVariable(value = "id") long id, Model model) {
         Optional<Category> categoryOpt = categoryRepository.findById(id);
@@ -68,12 +68,14 @@ public class ProductController {
             @RequestParam String title,
             @RequestParam String text,
             @RequestParam Double price,
+            @RequestParam(value = "discount", defaultValue = "0.0") Double discount,
             @RequestParam("file") MultipartFile file) {
 
         Product product = new Product();
         product.setTitle(title);
         product.setText(text);
         product.setPrice(price);
+        product.setDiscount(discount);
 
         Category category = categoryRepository.findById(categoryId).orElseThrow();
         product.setCategory(category);
@@ -141,12 +143,14 @@ public class ProductController {
             @RequestParam String title,
             @RequestParam String text,
             @RequestParam Double price,
+            @RequestParam(value = "discount", defaultValue = "0.0") Double discount,
             @RequestParam("file") MultipartFile file) {
 
         Product product = productRepository.findById(id).orElseThrow();
         product.setTitle(title);
         product.setText(text);
         product.setPrice(price);
+        product.setDiscount(discount);
 
         if (!file.isEmpty()) {
             try {
@@ -167,5 +171,4 @@ public class ProductController {
         return "redirect:/shop/product/" + id;
     }
 }
-
 

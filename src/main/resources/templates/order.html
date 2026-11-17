@@ -1,83 +1,105 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="uk">
+<html xmlns:th="http://www.thymeleaf.org" lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Оформлення замовлення</title>
+    <title th:text="${pageTitle}">Оформлення замовлення</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body class="bg-light">
-
 <header th:insert="bloks/header :: header"> </header>
 
-<div class="container my-5 py-4">
-    <div class="row g-5">
+<div class="container my-5" style="max-width: 1000px;">
+    <div class="row g-4">
 
-        <div class="col-lg-7">
-            <div class="card border-0 p-4 p-md-5 rounded-4 bg-white shadow-sm">
+        <!-- Форма оформлення замовлення -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
                 <h3 class="fw-bold text-dark mb-4">Оформлення замовлення</h3>
 
-                <form action="/orders/create" method="post" id="orderForm">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label fw-medium text-secondary">Ім'я та Прізвище</label>
-                            <input type="text" name="customerName" class="form-control rounded-3 p-3 border-light bg-light" required>
-                        </div>
+                <form th:action="@{/orders/create}" method="post" id="orderForm">
 
-                        <div class="col-12">
-                            <label class="form-label fw-medium text-secondary">Номер телефону</label>
-                            <input type="tel" name="customerPhone" class="form-control rounded-3 p-3 border-light bg-light" placeholder="+380" required>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label fw-medium text-secondary">Адреса доставки (Нова Пошта / Укрпошта)</label>
-                            <textarea name="shippingAddress" class="form-control rounded-3 p-3 border-light bg-light" rows="3" required></textarea>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-semibold">Ім'я та Прізвище</label>
+                        <input type="text" name="customerName" class="form-control rounded-3 py-2" placeholder="Введіть ваше ім'я" required>
                     </div>
 
-                    <input type="hidden" name="totalSum" th:value="${totalPrice}">
-
-                    <div class="mt-4 pt-2">
-                        <button type="submit" class="btn btn-success btn-lg rounded-3 fw-semibold w-100" style="padding: 14px 28px; background-color: #2e7d32; border-color: #2e7d32;">
-                            Підтвердити замовлення
-                        </button>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-semibold">Номер телефону</label>
+                        <input type="tel" name="customerPhone" class="form-control rounded-3 py-2" placeholder="+380" required>
                     </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-semibold">Адреса доставки (Нова Пошта / Укрпошта)</label>
+                        <textarea name="shippingAddress" rows="3" class="form-control rounded-3" placeholder="Місто, номер відділення або вулиця..." required></textarea>
+                    </div>
+
+                    <input type="hidden" name="useBonuses" id="hiddenUseBonuses" value="false">
+                    <input type="hidden" name="totalSum" id="hiddenTotalSum" th:value="${totalPrice}">
+
+                    <button type="submit" class="btn btn-success w-100 py-3 rounded-3 fw-bold fs-5 shadow-sm" style="background-color: #2e7d32; border-color: #2e7d32;">
+                        Підтвердити замовлення
+                    </button>
                 </form>
             </div>
         </div>
 
-        <div class="col-lg-5">
-            <div class="card border-0 p-4 rounded-4 bg-white shadow-sm sticky-top" style="top: 20px;">
+        <!-- Склад замовлення з відображенням знижок -->
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
                 <h4 class="fw-bold text-dark mb-4">Ваше замовлення</h4>
 
-                <div class="mb-4" style="max-height: 240px; overflow-y: auto;">
-                    <div th:each="item : ${cartItems}" class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                <div class="d-flex flex-column gap-3 mb-4">
+                    <div th:each="item : ${cartItems}" class="d-flex justify-content-between align-items-start border-bottom pb-3">
                         <div>
-                            <h6 class="fw-bold text-dark mb-0 small" th:text="${item.product.title}">Назва товару</h6>
-                            <small class="text-muted" th:text="${item.quantity} + ' x ' + ${item.product.price} + ' грн'"></small>
+                            <h6 class="fw-bold text-dark mb-1" th:text="${item.product.title}">Товар</h6>
+
+                            <!-- Відображення для акційного товару  -->
+                            <div th:if="${item.product.isOnSale()}" class="d-flex align-items-center gap-1">
+                                <span class="badge bg-danger rounded-pill px-2 py-0" style="font-size: 0.72rem;"
+                                      th:text="'-' + ${#numbers.formatDecimal(item.product.discount, 0, 0)} + '%'"></span>
+                                <small class="text-muted text-decoration-line-through"
+                                       th:text="${item.product.calculatePrice()} + ' грн'"></small>
+                                <small class="text-secondary"
+                                       th:text="'(' + ${item.quantity} + ' × ' + ${#numbers.formatDecimal(item.product.calculatePrice(item.product.discount), 1, 2)} + ' грн)'"></small>
+                            </div>
+
+                            <!-- Відображення для звичайного товару без знижки -->
+                            <small th:unless="${item.product.isOnSale()}" class="text-muted"
+                                   th:text="${item.quantity} + ' × ' + ${item.product.calculatePrice()} + ' грн'"></small>
                         </div>
-                        <span class="fw-bold text-success" th:text="${item.product.price * item.quantity} + ' грн'"></span>
+
+                        <!-- Підсумкова сума  -->
+                        <div class="text-end">
+                            <span class="fw-bold text-success"
+                                  th:if="${item.product.isOnSale()}"
+                                  th:text="${#numbers.formatDecimal(item.product.calculatePrice(item.product.discount) * item.quantity, 1, 2)} + ' грн'"></span>
+                            <span class="fw-bold text-success"
+                                  th:unless="${item.product.isOnSale()}"
+                                  th:text="${#numbers.formatDecimal(item.product.calculatePrice() * item.quantity, 1, 2)} + ' грн'"></span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card bg-light border-0 p-3 rounded-3 mb-4" sec:authorize="isAuthenticated()">
-                    <div class="form-check form-switch m-0">
-                        <input class="form-check-input" type="checkbox" id="useBonuses" name="useBonuses" value="true" form="orderForm">
-                        <label class="form-check-label fw-semibold text-dark" for="useBonuses">
+                <!-- Блок бонусів -->
+                <div class="p-3 bg-light rounded-3 mb-4">
+                    <div class="form-check form-switch d-flex justify-content-between align-items-center p-0 m-0">
+                        <label class="form-check-label fw-medium text-dark cursor-pointer" for="useBonusesSwitch">
                             Списати доступні бонуси
                         </label>
+                        <input class="form-check-input m-0 ms-2" type="checkbox" id="useBonusesSwitch" onchange="toggleBonuses(this)">
                     </div>
-                    <div class="text-muted small mt-1">
-                        На вашому рахунку: <span class="text-success fw-bold" th:text="${userBonuses != null ? userBonuses : 0} + ' б.'">0 б.</span>
-                    </div>
+                    <small class="text-muted d-block mt-1">
+                        На вашому рахунку: <b class="text-success" th:text="${userBonuses} + ' б.'">0 б.</b>
+                    </small>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center pt-2 border-top border-light">
-                    <span class="fs-5 fw-medium text-secondary">Разом до сплати:</span>
-                    <span class="fs-3 fw-bold text-success">
-                        <span th:text="${totalPrice}">0.00</span> <span class="fs-6 fw-normal text-muted">грн</span>
-                    </span>
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <span class="text-muted fs-5">Разом до сплати:</span>
+                    <span class="fs-3 fw-bold text-success" id="finalTotalDisplay"
+                          th:text="${totalPrice} + ' грн'">0.00 грн</span>
                 </div>
+
             </div>
         </div>
 
@@ -85,5 +107,28 @@
 </div>
 
 <footer th:insert="bloks/footer :: footer"> </footer>
+
+<script th:inline="javascript">
+    const baseTotal = /*[[${totalPrice}]]*/ 0.0;
+    const availableBonuses = /*[[${userBonuses}]]*/ 0;
+
+    function toggleBonuses(switchEl) {
+        let finalSum = baseTotal;
+        const totalDisplay = document.getElementById('finalTotalDisplay');
+        const hiddenTotalInput = document.getElementById('hiddenTotalSum');
+        const hiddenBonusInput = document.getElementById('hiddenUseBonuses');
+
+        if (switchEl.checked) {
+            finalSum = Math.max(0, baseTotal - availableBonuses);
+            hiddenBonusInput.value = "true";
+        } else {
+            hiddenBonusInput.value = "false";
+        }
+
+        finalSum = Math.round(finalSum * 100) / 100;
+        totalDisplay.innerText = finalSum.toFixed(2) + ' грн';
+        hiddenTotalInput.value = finalSum;
+    }
+</script>
 </body>
 </html>

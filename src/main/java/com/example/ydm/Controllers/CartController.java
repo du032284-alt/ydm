@@ -32,9 +32,17 @@ public class CartController {
     public String viewCart(Model model) {
         Iterable<ItemCart> cartItems = cartRepository.findAll();
         double totalPrice = 0;
+
         for (ItemCart item : cartItems) {
-            totalPrice += item.getProduct().getPrice() * item.getQuantity();
+            Product prod = item.getProduct();
+            // Розрахунок актуальної вартості з урахуванням знижки товару
+            double actualPrice = prod.isOnSale() ? prod.calculatePrice(prod.getDiscount()) : prod.calculatePrice();
+            totalPrice += actualPrice * item.getQuantity();
         }
+
+        // Округлення підсумкової суми до 2 знаків після коми
+        totalPrice = Math.round(totalPrice * 100.0) / 100.0;
+
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", totalPrice);
         model.addAttribute("pageTitle", "Ваш кошик покупок");

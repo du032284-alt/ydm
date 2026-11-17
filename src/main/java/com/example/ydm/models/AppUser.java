@@ -28,7 +28,7 @@ public class AppUser {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.bonuses = 0; // Новим користувачам автоматично ставимо 0 бонусів
+        this.bonuses = 0;
     }
     // Геттер та сеттер для бонусів
     public int getBonuses() { return bonuses; }
